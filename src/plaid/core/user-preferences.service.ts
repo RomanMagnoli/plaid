@@ -15,6 +15,12 @@ export class UserPreferencesService {
   private readonly DAYS_SHOWN = 'DAYS_SHOWN';
   private readonly SHOW_TODAY = 'SHOW_TODAY';
   private readonly FAVORITE_KEYS = 'FAVORITE_KEYS';
+  private readonly QUICK_LOG_NEXT_DAY_MESSAGE = 'QUICK_LOG_NEXT_DAY_MESSAGE';
+  private readonly QUICK_LOG_PROBLEMS_MESSAGE = 'QUICK_LOG_PROBLEMS_MESSAGE';
+  private readonly QUICK_LOG_NEXT_DAY_ENABLED = 'QUICK_LOG_NEXT_DAY_ENABLED';
+  private readonly QUICK_LOG_PROBLEMS_ENABLED = 'QUICK_LOG_PROBLEMS_ENABLED';
+  private readonly QUICK_LOG_NEXT_DAY_TASK_CODE = 'QUICK_LOG_NEXT_DAY_TASK_CODE';
+  private readonly QUICK_LOG_PROBLEMS_TASK_CODE = 'QUICK_LOG_PROBLEMS_TASK_CODE';
 
   private workingHoursStartMinutes: BehaviorSubject<number> =
     new BehaviorSubject<number>(Number(localStorage.getItem(this.WORKING_HOURS_START_MINUTES) || 540));
@@ -39,6 +45,20 @@ export class UserPreferencesService {
   private showToday: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(localStorage.getItem(this.SHOW_TODAY) === '1');
   private favoriteKeys: BehaviorSubject<FavoriteKeys> =
     new BehaviorSubject<FavoriteKeys>((JSON.parse(localStorage.getItem(this.FAVORITE_KEYS) || '{}')) as FavoriteKeys);
+  
+  // Quick Log configuration
+  private quickLogNextDayMessage: BehaviorSubject<string> = 
+    new BehaviorSubject<string>(localStorage.getItem(this.QUICK_LOG_NEXT_DAY_MESSAGE) || 'Review pending tasks for tomorrow');
+  private quickLogProblemsMessage: BehaviorSubject<string> = 
+    new BehaviorSubject<string>(localStorage.getItem(this.QUICK_LOG_PROBLEMS_MESSAGE) || 'No issues found');
+  private quickLogNextDayEnabled: BehaviorSubject<boolean> = 
+    new BehaviorSubject<boolean>(localStorage.getItem(this.QUICK_LOG_NEXT_DAY_ENABLED) !== '0');
+  private quickLogProblemsEnabled: BehaviorSubject<boolean> = 
+    new BehaviorSubject<boolean>(localStorage.getItem(this.QUICK_LOG_PROBLEMS_ENABLED) !== '0');
+  private quickLogNextDayTaskCode: BehaviorSubject<string> = 
+    new BehaviorSubject<string>(localStorage.getItem(this.QUICK_LOG_NEXT_DAY_TASK_CODE) || '');
+  private quickLogProblemsTaskCode: BehaviorSubject<string> = 
+    new BehaviorSubject<string>(localStorage.getItem(this.QUICK_LOG_PROBLEMS_TASK_CODE) || '');
 
   setWorkingHoursStartMinutes(value: number): void {
     this.workingHoursStartMinutes.next(value);
@@ -211,5 +231,60 @@ export class UserPreferencesService {
   private getVisibleDaysEndForShowToday(): number {
     // When showToday is true, start and end should be the same day
     return this.getVisibleDaysStartForShowToday();
+  }
+
+  // Quick Log configuration methods
+  setQuickLogNextDayMessage(value: string): void {
+    this.quickLogNextDayMessage.next(value);
+    localStorage.setItem(this.QUICK_LOG_NEXT_DAY_MESSAGE, value);
+  }
+
+  getQuickLogNextDayMessage$(): Observable<string> {
+    return this.quickLogNextDayMessage.asObservable();
+  }
+
+  setQuickLogProblemsMessage(value: string): void {
+    this.quickLogProblemsMessage.next(value);
+    localStorage.setItem(this.QUICK_LOG_PROBLEMS_MESSAGE, value);
+  }
+
+  getQuickLogProblemsMessage$(): Observable<string> {
+    return this.quickLogProblemsMessage.asObservable();
+  }
+
+  setQuickLogNextDayEnabled(value: boolean): void {
+    this.quickLogNextDayEnabled.next(value);
+    localStorage.setItem(this.QUICK_LOG_NEXT_DAY_ENABLED, value ? '1' : '0');
+  }
+
+  getQuickLogNextDayEnabled$(): Observable<boolean> {
+    return this.quickLogNextDayEnabled.asObservable();
+  }
+
+  setQuickLogProblemsEnabled(value: boolean): void {
+    this.quickLogProblemsEnabled.next(value);
+    localStorage.setItem(this.QUICK_LOG_PROBLEMS_ENABLED, value ? '1' : '0');
+  }
+
+  getQuickLogProblemsEnabled$(): Observable<boolean> {
+    return this.quickLogProblemsEnabled.asObservable();
+  }
+
+  setQuickLogNextDayTaskCode(value: string): void {
+    this.quickLogNextDayTaskCode.next(value);
+    localStorage.setItem(this.QUICK_LOG_NEXT_DAY_TASK_CODE, value);
+  }
+
+  getQuickLogNextDayTaskCode$(): Observable<string> {
+    return this.quickLogNextDayTaskCode.asObservable();
+  }
+
+  setQuickLogProblemsTaskCode(value: string): void {
+    this.quickLogProblemsTaskCode.next(value);
+    localStorage.setItem(this.QUICK_LOG_PROBLEMS_TASK_CODE, value);
+  }
+
+  getQuickLogProblemsTaskCode$(): Observable<string> {
+    return this.quickLogProblemsTaskCode.asObservable();
   }
 }

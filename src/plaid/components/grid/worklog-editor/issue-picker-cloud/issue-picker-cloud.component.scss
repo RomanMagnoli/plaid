@@ -17,6 +17,7 @@
   transition: 0.1s opacity;
   height: 400px;
   overflow: hidden;
+  z-index: 10001; // High z-index for modals
 
   &.open {
     opacity: 1;
@@ -64,4 +65,38 @@
   line-height: 21px;
   padding: 0 5px;
   z-index: 1;
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .issue-picker {
+    background: #2d2d30;
+    border: 1px solid #3e3e42;
+    color: #cccccc;
+  }
+
+  .search {
+    background-color: #1e1e1e!important;
+    border: 1px solid #3e3e42!important;
+    color: #cccccc!important;
+
+    &::placeholder {
+      color: #999!important;
+    }
+  }
+
+  .spinner {
+    color: #cccccc;
+  }
+
+  .scrollable-area {
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  .section-header {
+    background-color: #1e1e1e;
+    color: #cccccc;
+  }
 }

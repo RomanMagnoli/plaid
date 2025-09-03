@@ -1,0 +1,41 @@
+<div 
+  class="wrapper visible"
+  (mousedown)="onBackdropClick($event)" 
+  (keydown)="onKeydown($event)"
+>
+  <div class="panel-wrapper visible">
+    <div class="panel">
+      <label for="problems-text">🚨 Problems Found</label>
+      <textarea
+        #textArea
+        id="problems-text"
+        class="tangible comment-input"
+        [(ngModel)]="messageText"
+        [placeholder]="defaultMessage"
+        rows="6"
+        (keydown)="onKeydown($event)"
+        tabindex="0"
+      ></textarea>
+      <div class="hint-text">
+        💡 If you don't write anything, it will log: "{{ defaultMessage }}"
+      </div>
+      
+      <div class="buttons-area">
+        <button 
+          class="button primary tangible" 
+          (click)="onSubmit()"
+          tabindex="0"
+        >
+          📝 Log Problems
+        </button>
+        <button 
+          class="button tangible" 
+          (click)="onCancel()"
+          tabindex="0"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

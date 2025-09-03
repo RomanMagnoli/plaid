@@ -39,6 +39,20 @@ export class SettingsComponent {
   @Input() showToday: boolean;
   @Output() showTodayChange = new EventEmitter<boolean>();
 
+  // Quick Log configuration inputs and outputs
+  @Input() quickLogNextDayMessage: string;
+  @Output() quickLogNextDayMessageChange = new EventEmitter<string>();
+  @Input() quickLogProblemsMessage: string;
+  @Output() quickLogProblemsMessageChange = new EventEmitter<string>();
+  @Input() quickLogNextDayEnabled: boolean;
+  @Output() quickLogNextDayEnabledChange = new EventEmitter<boolean>();
+  @Input() quickLogProblemsEnabled: boolean;
+  @Output() quickLogProblemsEnabledChange = new EventEmitter<boolean>();
+  @Input() quickLogNextDayTaskCode: string;
+  @Output() quickLogNextDayTaskCodeChange = new EventEmitter<string>();
+  @Input() quickLogProblemsTaskCode: string;
+  @Output() quickLogProblemsTaskCodeChange = new EventEmitter<string>();
+
   constructor(private ref: ElementRef, private cdr: ChangeDetectorRef) {
   }
 
@@ -47,6 +61,48 @@ export class SettingsComponent {
       this.showTodayChange.emit(value);
     }
     this.showToday = value;
+  }
+
+  setQuickLogNextDayMessage(value: string) {
+    if (this.quickLogNextDayMessage !== value && this.quickLogNextDayMessage !== undefined) {
+      this.quickLogNextDayMessageChange.emit(value);
+    }
+    this.quickLogNextDayMessage = value;
+  }
+
+  setQuickLogProblemsMessage(value: string) {
+    if (this.quickLogProblemsMessage !== value && this.quickLogProblemsMessage !== undefined) {
+      this.quickLogProblemsMessageChange.emit(value);
+    }
+    this.quickLogProblemsMessage = value;
+  }
+
+  setQuickLogNextDayEnabled(value: boolean) {
+    if (this.quickLogNextDayEnabled !== value && this.quickLogNextDayEnabled !== undefined) {
+      this.quickLogNextDayEnabledChange.emit(value);
+    }
+    this.quickLogNextDayEnabled = value;
+  }
+
+  setQuickLogProblemsEnabled(value: boolean) {
+    if (this.quickLogProblemsEnabled !== value && this.quickLogProblemsEnabled !== undefined) {
+      this.quickLogProblemsEnabledChange.emit(value);
+    }
+    this.quickLogProblemsEnabled = value;
+  }
+
+  setQuickLogNextDayTaskCode(value: string) {
+    if (this.quickLogNextDayTaskCode !== value && this.quickLogNextDayTaskCode !== undefined) {
+      this.quickLogNextDayTaskCodeChange.emit(value);
+    }
+    this.quickLogNextDayTaskCode = value;
+  }
+
+  setQuickLogProblemsTaskCode(value: string) {
+    if (this.quickLogProblemsTaskCode !== value && this.quickLogProblemsTaskCode !== undefined) {
+      this.quickLogProblemsTaskCodeChange.emit(value);
+    }
+    this.quickLogProblemsTaskCode = value;
   }
 
   setWorkingHoursStartMinutes(value: number) {

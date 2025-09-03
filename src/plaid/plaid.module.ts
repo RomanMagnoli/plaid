@@ -25,6 +25,9 @@ import {IssuePickerCloudComponent} from './components/grid/worklog-editor/issue-
 import {IssueDetailsComponent} from './components/grid/issue-details/issue-details.component';
 import {IssueListItemComponent} from './components/grid/worklog-editor/issue-picker-cloud/issue-list-item/issue-list-item.component';
 import {AddButtonComponent} from './components/top-bar/add-button/add-button.component';
+import {QuickLogButtonsComponent} from './components/top-bar/quick-log-buttons/quick-log-buttons.component';
+import {ProblemsModalComponent} from './components/top-bar/quick-log-buttons/problems-modal/problems-modal.component';
+import {NextDayTasksModalComponent} from './components/top-bar/quick-log-buttons/next-day-tasks-modal/next-day-tasks-modal.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +51,10 @@ import {AddButtonComponent} from './components/top-bar/add-button/add-button.com
     IssuePickerCloudComponent,
     IssueDetailsComponent,
     IssueListItemComponent,
-    AddButtonComponent
+    AddButtonComponent,
+    QuickLogButtonsComponent,
+    ProblemsModalComponent,
+    NextDayTasksModalComponent
   ],
   imports: [
     BrowserModule,

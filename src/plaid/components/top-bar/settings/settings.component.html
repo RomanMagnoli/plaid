@@ -103,4 +103,88 @@
       <option value="light">Disabled</option>
     </select>
   </div>
+
+  <!-- Quick Log Configuration Section -->
+  <div class="section-divider"></div>
+  <div class="section-title">⚡ Quick Log</div>
+  
+  <div class="field-set">
+    <label for="quick-log-next-day">Next day tasks</label>
+    <select
+      id="quick-log-next-day"
+      class="input wide-dropdown"
+      [tabIndex]="dropdownOpen ? 0 : -1"
+      [ngModel]="quickLogNextDayEnabled ? 1 : 0"
+      (ngModelChange)="setQuickLogNextDayEnabled($event == 1)"
+    >
+      <option value="0">Disabled</option>
+      <option value="1">Enabled</option>
+    </select>
+  </div>
+  
+  <div class="field-set" *ngIf="quickLogNextDayEnabled">
+    <label for="quick-log-next-day-message">Default message (tasks)</label>
+    <input
+      id="quick-log-next-day-message"
+      class="input wide-input"
+      type="text"
+      [tabIndex]="dropdownOpen ? 0 : -1"
+      [ngModel]="quickLogNextDayMessage"
+      (ngModelChange)="setQuickLogNextDayMessage($event)"
+      placeholder="Review pending tasks for tomorrow"
+    />
+  </div>
+  
+  <div class="field-set" *ngIf="quickLogNextDayEnabled">
+    <label for="quick-log-next-day-task-code">Task code (optional - for 1min worklog)</label>
+    <input
+      id="quick-log-next-day-task-code"
+      class="input wide-input"
+      type="text"
+      [tabIndex]="dropdownOpen ? 0 : -1"
+      [ngModel]="quickLogNextDayTaskCode"
+      (ngModelChange)="setQuickLogNextDayTaskCode($event)"
+      placeholder="e.g., PROJ-123 (leave empty to disable)"
+    />
+  </div>
+  
+  <div class="field-set">
+    <label for="quick-log-problems">Problems found</label>
+    <select
+      id="quick-log-problems"
+      class="input wide-dropdown"
+      [tabIndex]="dropdownOpen ? 0 : -1"
+      [ngModel]="quickLogProblemsEnabled ? 1 : 0"
+      (ngModelChange)="setQuickLogProblemsEnabled($event == 1)"
+    >
+      <option value="0">Disabled</option>
+      <option value="1">Enabled</option>
+    </select>
+  </div>
+  
+  <div class="field-set" *ngIf="quickLogProblemsEnabled">
+    <label for="quick-log-problems-message">Default message (problems)</label>
+    <input
+      id="quick-log-problems-message"
+      class="input wide-input"
+      type="text"
+      [tabIndex]="dropdownOpen ? 0 : -1"
+      [ngModel]="quickLogProblemsMessage"
+      (ngModelChange)="setQuickLogProblemsMessage($event)"
+      placeholder="No issues found"
+    />
+  </div>
+  
+  <div class="field-set" *ngIf="quickLogProblemsEnabled">
+    <label for="quick-log-problems-task-code">Task code (optional - for 1min worklog)</label>
+    <input
+      id="quick-log-problems-task-code"
+      class="input wide-input"
+      type="text"
+      [tabIndex]="dropdownOpen ? 0 : -1"
+      [ngModel]="quickLogProblemsTaskCode"
+      (ngModelChange)="setQuickLogProblemsTaskCode($event)"
+      placeholder="e.g., PROJ-456 (leave empty to disable)"
+    />
+  </div>
 </div>

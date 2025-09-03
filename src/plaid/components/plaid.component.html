@@ -16,6 +16,9 @@
     [disabled]="!currentUser || !!grid.editedWorklog"
     [gridComponent]="grid"
   ></plaid-add-button>
+  <plaid-quick-log-buttons
+    *ngIf="currentUser"
+  ></plaid-quick-log-buttons>
   <plaid-zoom-controls
     class="outside-settings"
     (pixelsPerMinuteChange)="pixelsPerMinute = $event"
@@ -40,6 +43,18 @@
     (themeChange)="setTheme($event)"
     [showToday]="showToday"
     (showTodayChange)="setShowToday($event)"
+    [quickLogNextDayMessage]="quickLogNextDayMessage"
+    (quickLogNextDayMessageChange)="setQuickLogNextDayMessage($event)"
+    [quickLogProblemsMessage]="quickLogProblemsMessage"
+    (quickLogProblemsMessageChange)="setQuickLogProblemsMessage($event)"
+    [quickLogNextDayEnabled]="quickLogNextDayEnabled"
+    (quickLogNextDayEnabledChange)="setQuickLogNextDayEnabled($event)"
+    [quickLogProblemsEnabled]="quickLogProblemsEnabled"
+    (quickLogProblemsEnabledChange)="setQuickLogProblemsEnabled($event)"
+    [quickLogNextDayTaskCode]="quickLogNextDayTaskCode"
+    (quickLogNextDayTaskCodeChange)="setQuickLogNextDayTaskCode($event)"
+    [quickLogProblemsTaskCode]="quickLogProblemsTaskCode"
+    (quickLogProblemsTaskCodeChange)="setQuickLogProblemsTaskCode($event)"
   >
     <plaid-zoom-controls
       class="inside-settings"

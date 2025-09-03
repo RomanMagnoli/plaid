@@ -1,0 +1,340 @@
+// Modal overlay that covers the entire screen
+.wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999; // Very high z-index to ensure it's above everything
+  background: rgba(50, 50, 50, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &.visible {
+    pointer-events: all;
+    opacity: 1;
+  }
+}
+
+.panel-wrapper {
+  width: 600px;
+  max-width: 90vw;
+  max-height: 85vh;
+  display: block;
+  
+  &.visible {
+    display: block;
+  }
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 24px;
+  position: relative;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  
+  * {
+    pointer-events: all;
+  }
+
+  .panel-title {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #333;
+    font-size: 20px;
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 12px;
+  }
+
+  label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+  }
+
+  .section {
+    margin-bottom: 24px;
+    
+    .section-label {
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .picker-controls {
+      margin-bottom: 16px;
+      
+      .close-picker {
+        background: #28a745;
+        color: white;
+        border-color: #28a745;
+
+        &:hover {
+          background: #218838;
+        }
+      }
+    }
+  }
+
+  .comment-input {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 12px;
+    line-height: 1.4;
+
+    &:focus {
+      outline: none;
+      border-color: #007acc;
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+    }
+  }
+
+  .hint-text {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 24px;
+    font-style: italic;
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-left: 3px solid #007acc;
+  }
+
+  .button {
+    padding: 10px 16px;
+    margin-left: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #f8f9fa;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #e9ecef;
+      transform: translateY(-1px);
+    }
+
+    &.primary {
+      background: #007acc;
+      color: white;
+      border-color: #007acc;
+
+      &:hover {
+        background: #005a9e;
+        box-shadow: 0 4px 12px rgba(0, 122, 204, 0.3);
+      }
+    }
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  .buttons-area {
+    text-align: right;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  // Task selection styling
+  .selected-tasks {
+    margin-top: 16px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 12px;
+    background: #f8f9fa;
+
+    .task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 12px;
+      margin-bottom: 8px;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid #e5e5e5;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .task-info {
+        flex: 1;
+        
+        .task-key {
+          font-weight: 600;
+          color: #007acc;
+          margin-right: 8px;
+          font-size: 14px;
+        }
+
+        .task-summary {
+          color: #495057;
+          font-size: 13px;
+          line-height: 1.4;
+          margin-top: 2px;
+        }
+      }
+
+      .remove-task {
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        flex-shrink: 0;
+        margin-left: 12px;
+
+        &:hover {
+          background: #c82333;
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .wrapper {
+    background: rgba(20, 20, 20, 0.8);
+  }
+
+  .panel {
+    background: #2d2d30;
+    border-color: #3e3e42;
+    color: #cccccc;
+
+    .panel-title {
+      color: #ffffff;
+      border-bottom-color: #3e3e42;
+    }
+
+    label,
+    .section-label {
+      color: #cccccc;
+    }
+
+    .comment-input {
+      background: #1e1e1e;
+      border-color: #3e3e42;
+      color: #cccccc;
+
+      &:focus {
+        border-color: #007acc;
+        box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.3);
+      }
+
+      &::placeholder {
+        color: #999;
+      }
+    }
+
+    .hint-text {
+      color: #b0b0b0;
+      background: #1e1e1e;
+      border-left-color: #007acc;
+    }
+
+    .button {
+      background: #3c3c3c;
+      border-color: #3e3e42;
+      color: #cccccc;
+
+      &:hover {
+        background: #4a4a4a;
+      }
+
+      &.primary {
+        background: #007acc;
+        border-color: #007acc;
+        color: white;
+
+        &:hover {
+          background: #005a9e;
+        }
+      }
+
+      &.close-picker {
+        background: #28a745;
+        border-color: #28a745;
+        color: white;
+
+        &:hover {
+          background: #218838;
+        }
+      }
+    }
+
+    .buttons-area {
+      border-top-color: #3e3e42;
+    }
+
+    .selected-tasks {
+      background: #1e1e1e;
+      border-color: #3e3e42;
+
+      .task-item {
+        background: #2d2d30;
+        border-color: #3e3e42;
+
+        .task-info {
+          .task-key {
+            color: #4fc3f7;
+          }
+
+          .task-summary {
+            color: #b0b0b0;
+          }
+        }
+
+        .remove-task {
+          background: #dc3545;
+
+          &:hover {
+            background: #c82333;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Issue picker inside modal needs higher z-index
+plaid-issue-picker-cloud {
+  position: relative;
+  z-index: 10000; // Higher than modal to appear on top
+  
+  ::ng-deep .issue-picker {
+    z-index: 10001;
+  }
+}

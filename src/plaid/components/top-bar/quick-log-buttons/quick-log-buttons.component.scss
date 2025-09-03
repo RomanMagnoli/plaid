@@ -1,0 +1,60 @@
+.quick-log-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.quick-log-button {
+  width: 40px;
+  height: 40px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent; // Transparent background to inherit from interface
+  color: inherit; // Inherit text color
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    background-color: rgba(0, 0, 0, 0.05); // Light hover effect
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &.logged {
+    border-color: #28a745; // Green border when logged
+    background-color: rgba(40, 167, 69, 0.1); // Very light green background
+  }
+
+  &.disabled,
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      background-color: transparent;
+    }
+  }
+
+  // Dark theme adjustments
+  @media (prefers-color-scheme: dark) {
+    &:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.1); // Light hover effect for dark mode
+      box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
+    }
+    
+    &.logged {
+      border-color: #198754;
+      background-color: rgba(25, 135, 84, 0.2); // Slightly more visible in dark mode
+    }
+  }
+}

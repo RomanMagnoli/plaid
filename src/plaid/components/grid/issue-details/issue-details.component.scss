@@ -22,6 +22,7 @@ p {
   font-size: 14px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-bottom: 3px;
@@ -64,5 +65,24 @@ p {
     vertical-align: middle;
     height: 16px;
     margin-right: 4px;
+  }
+}
+
+// Dark theme support for text
+@media (prefers-color-scheme: dark) {
+  :host {
+    color: #cccccc;
+  }
+
+  .parent-name {
+    color: #b0b0b0;
+  }
+
+  .name {
+    color: #ffffff;
+  }
+
+  .fields {
+    color: #b0b0b0;
   }
 }

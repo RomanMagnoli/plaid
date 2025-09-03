@@ -36,6 +36,14 @@ export class PlaidComponent implements OnInit {
   refreshIntervalMinutes: number;
   theme: Theme;
   showToday: boolean;
+  
+  // Quick Log configuration
+  quickLogNextDayMessage: string;
+  quickLogProblemsMessage: string;
+  quickLogNextDayEnabled: boolean;
+  quickLogProblemsEnabled: boolean;
+  quickLogNextDayTaskCode: string;
+  quickLogProblemsTaskCode: string;
 
   constructor(
     private systemPreferencesService: SystemPreferencesService, // Injected service early to run its constructor
@@ -63,6 +71,14 @@ export class PlaidComponent implements OnInit {
     this.userPreferencesService.getRefreshIntervalMinutes$().subscribe(value => this.refreshIntervalMinutes = value);
     this.userPreferencesService.getTheme$().subscribe(value => this.theme = value);
     this.userPreferencesService.getShowToday$().subscribe(value => this.showToday = value);
+    
+    // Quick Log configuration subscriptions
+    this.userPreferencesService.getQuickLogNextDayMessage$().subscribe(value => this.quickLogNextDayMessage = value);
+    this.userPreferencesService.getQuickLogProblemsMessage$().subscribe(value => this.quickLogProblemsMessage = value);
+    this.userPreferencesService.getQuickLogNextDayEnabled$().subscribe(value => this.quickLogNextDayEnabled = value);
+    this.userPreferencesService.getQuickLogProblemsEnabled$().subscribe(value => this.quickLogProblemsEnabled = value);
+    this.userPreferencesService.getQuickLogNextDayTaskCode$().subscribe(value => this.quickLogNextDayTaskCode = value);
+    this.userPreferencesService.getQuickLogProblemsTaskCode$().subscribe(value => this.quickLogProblemsTaskCode = value);
   }
 
   setVisibleDateRange(dateRange: DateRange): void {
@@ -113,5 +129,30 @@ export class PlaidComponent implements OnInit {
 
   setTheme(value: Theme): void {
     this.userPreferencesService.setTheme(value);
+  }
+
+  // Quick Log configuration setters
+  setQuickLogNextDayMessage(value: string): void {
+    this.userPreferencesService.setQuickLogNextDayMessage(value);
+  }
+
+  setQuickLogProblemsMessage(value: string): void {
+    this.userPreferencesService.setQuickLogProblemsMessage(value);
+  }
+
+  setQuickLogNextDayEnabled(value: boolean): void {
+    this.userPreferencesService.setQuickLogNextDayEnabled(value);
+  }
+
+  setQuickLogProblemsEnabled(value: boolean): void {
+    this.userPreferencesService.setQuickLogProblemsEnabled(value);
+  }
+
+  setQuickLogNextDayTaskCode(value: string): void {
+    this.userPreferencesService.setQuickLogNextDayTaskCode(value);
+  }
+
+  setQuickLogProblemsTaskCode(value: string): void {
+    this.userPreferencesService.setQuickLogProblemsTaskCode(value);
   }
 }
