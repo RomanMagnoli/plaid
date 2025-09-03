@@ -15,40 +15,60 @@ export class IssueFacade {
   private suggestions: Issue[];
 
   private static stripSpecialChars(s: string): string {
-    return s.replace(/([+.,;?|*/%^$#@\[\]"'`])/g, ' ').trim();
+  // Replace a set of known special characters with space to create a safer search string
+  const specials = '+.,;?|*/%^$#@[]"\'`';
+  return s.split('').map(ch => specials.includes(ch) ? ' ' : ch).join('').trim();
   }
 
   private static canPotentiallyBeIssueKey(maybeKey: string): boolean {
-    return /^[A-Za-z][A-Za-z0-9_]*-[1-9][0-9]*$/.test(maybeKey);
+  // Use \w and \d for concise character classes
+  return /^[A-Za-z]\w*-[1-9]\d*$/.test(maybeKey);
   }
 
   private setFavoriteAttribute(issues: Issue[]): Issue[] {
     return issues.map(issue => {
       const keys: string[] = this.favoriteKeys[this.authFacade.getJiraURL()] || [];
-      issue._favorite = keys.includes(issue.key);
+  issue._favorite = !!issue.key && keys.includes(issue.key as string);
       return issue;
     });
   }
 
-  private getSuggestionsFromApi$(): Observable<Issue[]> {
+  private getSuggestionsFromApi$(assignee?: string): Observable<Issue[]> {
+    if (assignee && assignee.trim() !== '') {
+      // For a specific assignee, return issues assigned to that user (excluding Done/Closed)
+      const jql = `assignee = "${assignee}" and status not in (Done, Closed) order by updatedDate desc`;
+      console.debug('[IssueFacade] getSuggestionsFromApi$ - assignee:', assignee, 'jql:', jql);
+      return this.issueApi
+        .search$(jql).pipe(
+          map(res => res.issues || [])
+        );
+    }
+
+    // No assignee specified: suggestions based on current user activity
+    const jqlCurrent = `(status changed by currentUser() OR creator = currentUser()) AND assignee = currentUser() and status not in (Done, Closed) order by updatedDate desc`;
+    console.debug('[IssueFacade] getSuggestionsFromApi$ - current user jql:', jqlCurrent);
     return this.issueApi
-      .search$('(status changed by currentUser() OR creator = currentUser()) and status not in (Done, Closed) order by updatedDate desc').pipe(
-        map(res => res.issues)
+      .search$(jqlCurrent).pipe(
+        map(res => res.issues || [])
       );
   }
 
   private getFavoritesFromApi$(): Observable<Issue[]> {
     const keys: string[] = this.favoriteKeys[this.authFacade.getJiraURL()] || [];
+    if (!keys || keys.length === 0) {
+      console.debug('[IssueFacade] getFavoritesFromApi$ - no favorite keys, returning empty array');
+      return of([]);
+    }
     const removedKeysIndexes: number[] = [];
     return zip(...keys.map(key => this.issueApi.getIssue$(key))).pipe(
-      map(issues => this.setFavoriteAttribute(issues.filter((issue: Issue, index: number) => {
+      map(issues => this.setFavoriteAttribute(issues.filter((issue: Issue | null, index: number) => {
         if (issue) {
           return true;
         } else {
           removedKeysIndexes.push(index);
           return false;
         }
-      }))),
+      }) as Issue[])),
       tap(() => {
         this.favoriteKeys[this.authFacade.getJiraURL()] =
           keys.filter((key: string, index: number) => !removedKeysIndexes.includes(index));
@@ -73,19 +93,20 @@ export class IssueFacade {
       .subscribe(favorites => this.issueState.setFavorites(favorites));
   }
 
-  quickSearch$(query: string): Observable<Issue[]> {
+  quickSearch$(query: string, assignee?: string): Observable<Issue[]> {
     if (IssueFacade.stripSpecialChars(query)) {
       if (IssueFacade.canPotentiallyBeIssueKey(query)) {
         return zip(
           this.issueApi.getIssue$(query),
-          this.issueApi.search$('text ~ "' + IssueFacade.stripSpecialChars(query) + '"')
+          this.issueApi.search$('text ~ "' + IssueFacade.stripSpecialChars(query) + '"' + (assignee ? ' AND assignee = "' + assignee + '"' : ''))
         ).pipe(
           map(([issue, searchResults]) =>
-            this.setFavoriteAttribute((issue ? [issue] : []).concat(searchResults.issues)))
+            this.setFavoriteAttribute((issue ? [issue] : []).concat(searchResults.issues || [])))
         );
       } else {
-        return this.issueApi.search$('text ~ "' + IssueFacade.stripSpecialChars(query) + '"').pipe(
-          map(res => this.setFavoriteAttribute(res.issues))
+        const jqlQuery = 'text ~ "' + IssueFacade.stripSpecialChars(query) + '"' + (assignee ? ' AND assignee = "' + assignee + '"' : '');
+        return this.issueApi.search$(jqlQuery).pipe(
+          map(res => this.setFavoriteAttribute(res.issues || []))
         );
       }
     } else {
@@ -93,11 +114,17 @@ export class IssueFacade {
     }
   }
 
-  fetchFavoritesAndSuggestions(): void {
-    // Suggestions should be fetched first
-    this.getSuggestionsFromApi$().subscribe(suggestions => {
-      this.issueState.setSuggestions(suggestions);
-      this.getFavoritesFromApi$().subscribe(favorites => this.issueState.setFavorites(favorites));
+  fetchFavoritesAndSuggestions(assignee?: string): void {
+    // Fetch favorites first so UI can show them immediately, then suggestions
+    console.debug('[IssueFacade] fetchFavoritesAndSuggestions - assignee:', assignee);
+    this.getFavoritesFromApi$().subscribe(favorites => {
+      console.debug('[IssueFacade] fetched favorites count =', (favorites || []).length);
+      this.issueState.setFavorites(favorites);
+      // Now fetch suggestions
+      this.getSuggestionsFromApi$(assignee).subscribe(suggestions => {
+        console.debug('[IssueFacade] fetched suggestions count =', (suggestions || []).length);
+        this.issueState.setSuggestions(suggestions);
+      });
     });
   }
 
@@ -111,8 +138,12 @@ export class IssueFacade {
 
   addFavorite(issue: Issue): void {
     const keys: string[] = this.favoriteKeys[this.authFacade.getJiraURL()] || [];
-    if (!keys.includes(issue.key)) {
-      keys.push(issue.key);
+    const key = issue.key;
+    if (!key) {
+      return;
+    }
+    if (!keys.includes(key)) {
+      keys.push(key);
       this.favoriteKeys[this.authFacade.getJiraURL()] = keys;
       this.userPrefsService.setFavoriteKeys(this.favoriteKeys);
     }
@@ -125,8 +156,12 @@ export class IssueFacade {
 
   removeFavorite(issue: Issue): void {
     let keys: string[] = this.favoriteKeys[this.authFacade.getJiraURL()] || [];
-    if (keys.includes(issue.key)) {
-      keys = keys.filter(key => key !== issue.key);
+    const key = issue.key;
+    if (!key) {
+      return;
+    }
+    if (keys.includes(key)) {
+      keys = keys.filter(k => k !== key);
       this.favoriteKeys[this.authFacade.getJiraURL()] = keys;
       this.userPrefsService.setFavoriteKeys(this.favoriteKeys);
     }

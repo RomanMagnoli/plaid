@@ -1,0 +1,46 @@
+<div class="user-picker issue-picker" [class.open]="open">
+  <input
+    class="search"
+    #searchInput
+    placeholder="Search users..."
+    (input)="inputSearch(searchInput.value);"
+    [tabIndex]="open ? 0 : -1"
+  >
+  <span class="spinner" *ngIf="searching"></span>
+  
+  <div class="scrollable-area always-show">
+    <button 
+      class="clear-selection user-item" 
+      (click)="clearSelection()"
+    >
+      <div class="avatar">
+        <span class="clear-icon">✖️</span>
+      </div>
+      <div class="user-info">
+        <div class="display-name">Clear selection (show my tasks)</div>
+      </div>
+    </button>
+    <button 
+      class="user-item" 
+      *ngFor="let user of searchResults" 
+      (click)="userSelected(user)"
+    >
+      <div class="avatar">
+        <img 
+          [src]="getAvatarUrl(user)" 
+          [alt]="user.displayName || user.name"
+          *ngIf="hasAvatar(user)"
+        >
+        <span class="no-avatar" *ngIf="!hasAvatar(user)">
+          👤
+        </span>
+      </div>
+      <div class="user-info">
+        <div class="display-name">{{ user.displayName || user.name }}</div>
+        <div class="email" *ngIf="user.emailAddress">{{ user.emailAddress }}</div>
+      </div>
+    </button>
+  </div>
+
+  
+</div>

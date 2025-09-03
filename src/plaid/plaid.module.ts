@@ -28,6 +28,7 @@ import {AddButtonComponent} from './components/top-bar/add-button/add-button.com
 import {QuickLogButtonsComponent} from './components/top-bar/quick-log-buttons/quick-log-buttons.component';
 import {ProblemsModalComponent} from './components/top-bar/quick-log-buttons/problems-modal/problems-modal.component';
 import {NextDayTasksModalComponent} from './components/top-bar/quick-log-buttons/next-day-tasks-modal/next-day-tasks-modal.component';
+import {UserPickerCloudComponent} from './components/grid/worklog-editor/user-picker-cloud/user-picker-cloud.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import {NextDayTasksModalComponent} from './components/top-bar/quick-log-buttons
     AddButtonComponent,
     QuickLogButtonsComponent,
     ProblemsModalComponent,
-    NextDayTasksModalComponent
+    NextDayTasksModalComponent,
+    UserPickerCloudComponent
   ],
   imports: [
     BrowserModule,

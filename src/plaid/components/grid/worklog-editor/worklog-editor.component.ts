@@ -76,6 +76,15 @@ export class WorklogEditorComponent implements OnInit {
   warningMessage: string = '';
   /** Texto para que el usuario ingrese la nueva estimación original */
   originalEstimateText: string = '';
+  /** Usuario seleccionado para filtrar tareas (username) */
+  selectedOwner: string = '';
+  /** Display name del usuario seleccionado */
+  selectedOwnerDisplay: string = '';
+  /** Objeto User completo del usuario seleccionado */
+  selectedUserObject: any = null;
+  /** Estado del user picker */
+  userPickerOpen = false;
+  userPickerOffsetTop = 0;
 
   @ViewChild('panel')
   panel: ElementRef<HTMLDivElement>;
@@ -176,6 +185,10 @@ export class WorklogEditorComponent implements OnInit {
         this.computeSizeAndOffset();
       }
       if (this.adding) {
+        // Clear user selection for new worklogs
+        this.selectedOwner = '';
+        this.selectedOwnerDisplay = '';
+        this.selectedUserObject = null;
         this.updateFavoriteIssuesAndSuggestionsAndEmitSuggestion.next();
       }
       // Al cargar editor, obtener issue completo para validar estimación
@@ -308,6 +321,15 @@ export class WorklogEditorComponent implements OnInit {
       this.issuePickerToggle.nativeElement.offsetTop - this.panel.nativeElement.scrollTop + 1,
       1440 * this.pixelsPerMinute - this.panelOffsetTop - 400
     );
+    
+    // Calculate user picker offset (above the issue picker)
+    const ownerInput = document.getElementById('owner-input');
+    if (ownerInput) {
+      this.userPickerOffsetTop = Math.min(
+        ownerInput.offsetTop - this.panel.nativeElement.scrollTop + 1,
+        1440 * this.pixelsPerMinute - this.panelOffsetTop - 300
+      );
+    }
   }
 
   /**
@@ -483,6 +505,18 @@ export class WorklogEditorComponent implements OnInit {
   }
 
   /**
+   * Handles owner/assignee input change to filter issues by selected user
+   */
+  onOwnerChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.selectedOwner = target.value.trim();
+    // Trigger refresh of issue picker suggestions when owner changes
+    if (this.issuePickerOpen) {
+      this.updateFavoriteIssuesAndSuggestionsAndEmitSuggestion.next();
+    }
+  }
+
+  /**
    * Handles date selection in the calendar cloud, changing worklog date and changing visible date range to include it
    */
   selectDate(date: Date): void {
@@ -556,6 +590,67 @@ export class WorklogEditorComponent implements OnInit {
   }
 
   /**
+   * Opens or closes user picker cloud
+   */
+  toggleUserPicker(event?: MouseEvent): void {
+    // If click originated on the clear button, do not open the picker
+    if (event && (event.target as HTMLElement).closest && (event.target as HTMLElement).closest('.clear-user-button')) {
+      return;
+    }
+    if (!this.saving && !this.userPickerOpen) {
+      this.userPickerOpen = true;
+      this.computeSizeAndOffset();
+
+      const mousedownOutsideUserPickerEventListener = (event: MouseEvent) => {
+        const userPickerElement = document.querySelector('plaid-user-picker-cloud');
+        if (userPickerElement && !(userPickerElement as Node).contains(event.target as Node)
+          && event.target !== document.getElementById('owner-input')) {
+          this.userPickerOpen = false;
+          removeEventListener('mousedown', mousedownOutsideUserPickerEventListener);
+
+          this.cdr.detectChanges();
+        }
+      };
+
+  addEventListener('mousedown', mousedownOutsideUserPickerEventListener);
+    } else {
+      this.userPickerOpen = false;
+    }
+  }
+
+  /**
+   * Handles user selection from user picker
+   */
+  selectUser(user: any): void {
+    if (user) {
+      this.selectedOwner = user.accountId || user.name || '';
+      this.selectedOwnerDisplay = user.displayName || user.name || 'Unknown User';
+      this.selectedUserObject = user;
+    } else {
+      this.selectedOwner = '';
+      this.selectedOwnerDisplay = '';
+      this.selectedUserObject = null;
+    }
+    
+    // Close user picker
+    this.userPickerOpen = false;
+    
+    // Refresh suggestions with new assignee filter
+    this.updateFavoriteIssuesAndSuggestionsAndEmitSuggestion.next();
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Handles keydown events on the owner input to allow clearing with Delete/Backspace
+   */
+  onOwnerInputKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Delete' || event.key === 'Backspace') {
+      event.preventDefault();
+      this.selectUser(null); // Clear selection
+    }
+  }
+
+  /**
    * Updates worklog on the server (or adds new to the server) and closes the editor if update was successful
    */
   save(): void {
@@ -590,7 +685,17 @@ export class WorklogEditorComponent implements OnInit {
   /**
    * Handles issue selection action from issue picker.
    */
-  selectIssue(issue: Issue): void {
+  selectIssue(issue?: Issue | null): void {
+    // If no issue provided, clear issue selection and return
+    if (!issue) {
+      if (this._worklog) {
+        this._worklog.issue = undefined;
+        this._worklog.issueId = undefined as any;
+      }
+      this.updatePanelHueSaturationAndIssueString(undefined as any, '');
+      return;
+    }
+
     // Set basic issue info immediately
     if (this._worklog) {
       this._worklog.issue = issue;

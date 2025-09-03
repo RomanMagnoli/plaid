@@ -63,6 +63,12 @@ export class IssuePickerCloudComponent implements OnInit {
   @Input()
   keysDisabled: boolean;
 
+  /**
+   * Username (assignee) to filter issues by. If empty, shows current user's issues.
+   */
+  @Input()
+  assignee: string;
+
   constructor(private issueFacade: IssueFacade, private cdr: ChangeDetectorRef) {
   }
 
@@ -73,7 +79,7 @@ export class IssuePickerCloudComponent implements OnInit {
         this.searching = true;
         this.cdr.detectChanges();
       }),
-      switchMap(s => this.issueFacade.quickSearch$(s))
+      switchMap(s => this.issueFacade.quickSearch$(s, this.assignee))
     ).subscribe(res => {
       this.searching = false;
       if (this.searchInput.nativeElement.value) {
@@ -84,7 +90,13 @@ export class IssuePickerCloudComponent implements OnInit {
 
     if (this.updateFavoritesAndSuggestionsAndEmitSuggestion != null) {
       this.updateFavoritesAndSuggestionsAndEmitSuggestion.subscribe(() => {
-        this.issueFacade.fetchFavoritesAndSuggestions();
+        // ensure @Input() assignee has been updated by Angular change detection
+        // before we call facade.fetchFavoritesAndSuggestions
+        console.debug('[IssuePickerCloud] update trigger received, assignee =', this.assignee);
+        setTimeout(() => {
+          console.debug('[IssuePickerCloud] calling fetchFavoritesAndSuggestions with assignee =', this.assignee);
+          this.issueFacade.fetchFavoritesAndSuggestions(this.assignee);
+        }, 0);
       });
     }
 
@@ -97,10 +109,16 @@ export class IssuePickerCloudComponent implements OnInit {
       if (suggestions.length > 0) {
         this.issueChange.emit(suggestions[0]);
       } else {
-        this.issueChange.emit(null);
+        this.issueChange.emit(undefined);
       }
       this.cdr.detectChanges();
     });
+
+    // Trigger initial fetch for current assignee to populate suggestions/favorites on mount
+    setTimeout(() => {
+      console.debug('[IssuePickerCloud] ngOnInit initial fetch with assignee =', this.assignee);
+      this.issueFacade.fetchFavoritesAndSuggestions(this.assignee);
+    }, 0);
   }
 
   inputSearch(query: string): void {
@@ -130,6 +148,18 @@ export class IssuePickerCloudComponent implements OnInit {
 
   get suggestionsWithoutFavorites(): Issue[] {
     return this.suggestions.filter(issue => !this.favorites.find(favorite => favorite.key === issue.key));
+  }
+
+  get suggestionsToShow(): Issue[] {
+    // When no assignee is selected (empty string or null), show current user's suggestions without favorites
+    // When specific assignee is selected, show all suggestions for that assignee
+    if (!this.assignee || this.assignee.trim() === '') {
+      // Current user: show suggestions that aren't already in favorites
+      return this.suggestionsWithoutFavorites;
+    } else {
+      // Specific assignee: show all suggestions for that user
+      return this.suggestions;
+    }
   }
 
 }

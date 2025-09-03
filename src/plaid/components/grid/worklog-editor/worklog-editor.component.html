@@ -28,6 +28,38 @@ Ctrl to snap to 60 minutes."
       (mousedown)="dragStart($event)"
     >
       <label>Issue</label>
+      
+      <!-- Owner/Assignee selector -->
+      <div class="owner-selector">
+        <div class="input-container">
+          <input
+            #ownerInput
+            id="owner-input"
+            class="tangible search"
+            readonly
+            [value]="selectedOwnerDisplay"
+            placeholder="Your tasks (click to change user)"
+            [disabled]="saving"
+            (mousedown)="toggleUserPicker($event)"
+            (keydown)="onOwnerInputKeydown($event)"
+            [class.cloud-open]="userPickerOpen"
+            [tabIndex]="shouldTabIndexBe0() ? 0 : -1"
+            title="Click to select a different user or leave empty to see your own tasks. Press Delete or Backspace to clear selection."
+          >
+          <button
+            *ngIf="selectedOwnerDisplay"
+            class="clear-user-button"
+            type="button"
+            (mousedown)="$event.stopPropagation()"
+            (click)="$event.stopPropagation(); selectUser(null)"
+            [disabled]="saving"
+            title="Clear user selection"
+          >
+            ✖️
+          </button>
+        </div>
+      </div>
+      
       <input
         #issuePickerToggle
         id="issue-picker-toggle"
@@ -35,7 +67,7 @@ Ctrl to snap to 60 minutes."
         [disabled]="worklog?.id || saving"
         [value]="issueString"
         title=""
-        class="tangible"
+        class="tangible search"
         (mousedown)="toggleIssuePicker()"
         [class.cloud-open]="issuePickerOpen"
         [tabIndex]="shouldTabIndexBe0() && !worklog?.id ? 0 : -1"
@@ -59,10 +91,10 @@ Ctrl to snap to 60 minutes."
           [disabled]="!originalEstimateText"
         >Set estimate</button>
       </div>
-      <label>Date</label>
+      <label for="date-picker-toggle">Date</label>
       <input
         #calendarToggle
-        id="calendar-toggle"
+        id="date-picker-toggle"
         class="tangible"
         [class.cloud-open]="calendarOpen"
         title=""
@@ -72,9 +104,10 @@ Ctrl to snap to 60 minutes."
         readonly
         [tabIndex]="shouldTabIndexBe0() ? 0 : -1"
       >
-      <label>Comment</label>
+      <label for="comment-textarea">Comment</label>
       <textarea
         #commentTextArea
+        id="comment-textarea"
         [(ngModel)]="commentString"
         title=""
         class="tangible space-under"
@@ -137,9 +170,18 @@ Ctrl to snap to 60 minutes."
       [style.top.px]="issuePickerOffsetTop"
       (issueChange)="selectIssue($event)"
       [updateFavoritesAndSuggestionsAndEmitSuggestion]="updateFavoriteIssuesAndSuggestionsAndEmitSuggestion.asObservable()"
+      [assignee]="selectedOwner"
       title=""
       [keysDisabled]="keysDisabled"
     ></plaid-issue-picker-cloud>
+
+    <plaid-user-picker-cloud
+      [(open)]="userPickerOpen"
+      [style.top.px]="userPickerOffsetTop"
+      (userChange)="selectUser($event)"
+      title=""
+      [keysDisabled]="keysDisabled"
+    ></plaid-user-picker-cloud>
   </div>
 
   <a

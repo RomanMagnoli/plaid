@@ -18,17 +18,20 @@
     ></plaid-issue-list-item>
   </div>
   <div class="scrollable-area" *ngIf="!searchInput.value">
-    <div class="section-header" *ngIf="favorites.length > 0">Favorites</div>
+    <!-- Show favorites only when no specific assignee is selected (empty assignee means current user) -->
+    <div class="section-header" *ngIf="favorites.length > 0 && (!assignee || assignee.trim() === '')">Favorites</div>
+    <ng-container *ngIf="!assignee || assignee.trim() === ''">
+      <plaid-issue-list-item
+        *ngFor="let res of favorites"
+        [issue]="res"
+        (issueSelected)="issueSelected(res);"
+        (favoriteChange)="favoriteChange(res, $event)"
+        [keyboardNavigationEnabled]="open && !keysDisabled"
+      ></plaid-issue-list-item>
+    </ng-container>
+    <div class="section-header" *ngIf="suggestionsToShow.length > 0">Suggestions</div>
     <plaid-issue-list-item
-      *ngFor="let res of favorites"
-      [issue]="res"
-      (issueSelected)="issueSelected(res);"
-      (favoriteChange)="favoriteChange(res, $event)"
-      [keyboardNavigationEnabled]="open && !keysDisabled"
-    ></plaid-issue-list-item>
-    <div class="section-header" *ngIf="suggestionsWithoutFavorites.length > 0">Suggestions</div>
-    <plaid-issue-list-item
-      *ngFor="let res of suggestionsWithoutFavorites"
+      *ngFor="let res of suggestionsToShow"
       [issue]="res"
       (issueSelected)="issueSelected(res);"
       (favoriteChange)="favoriteChange(res, $event)"

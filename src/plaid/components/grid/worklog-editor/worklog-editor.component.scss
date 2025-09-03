@@ -207,3 +207,132 @@ plaid-date-picker-cloud {
   vertical-align: middle;
   pointer-events: none;
 }
+
+/* Estilo para el selector de propietario */
+.owner-selector {
+  margin-bottom: 10px;
+  
+  label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  input {
+    width: 100%;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+  padding-right: 40px; /* space for clear button */
+    
+    &::placeholder {
+      color: #999;
+      font-style: italic;
+    }
+
+    &.cloud-open {
+      box-shadow: none!important;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  /* container wrapping input and clear button */
+  .input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .clear-user-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #b00020; /* red-ish for visibility */
+    cursor: pointer;
+    font-size: 12px;
+    padding: 6px;
+    border-radius: 12px;
+    line-height: 1;
+  z-index: 2;
+  pointer-events: auto;
+  }
+
+  .clear-user-button:hover {
+  background: rgba(0,0,0,0.08);
+  color: #ff4040;
+  }
+
+  .clear-user-button:active {
+    transform: translateY(-50%) scale(0.98);
+  }
+
+  .clear-user-button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  
+  // Dark theme support
+  @media (prefers-color-scheme: dark) {
+    label {
+      color: #ccc;
+    }
+    
+    input {
+      color: #ccc;
+      background-color: #2d2d30;
+      border-color: #3e3e42;
+      
+      &::placeholder {
+        color: #777;
+      }
+
+      &.cloud-open {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    .input-container {
+      .clear-user-button {
+        color: #ff8b8b;
+        background: rgba(255,255,255,0.06);
+      }
+    }
+  }
+}
+
+/* Ensure owner and issue toggle inputs match issue-picker search styling
+   in both light and dark themes */
+@media (prefers-color-scheme: dark) {
+  #owner-input,
+  #issue-picker-toggle,
+  .owner-selector input {
+    background-color: #1e1e1e !important;
+    border: 1px solid #3e3e42 !important;
+  }
+
+  #owner-input::placeholder,
+  #issue-picker-toggle::placeholder,
+  .owner-selector input::placeholder {
+    color: #999 !important;
+  }
+
+  #owner-input.cloud-open,
+  #issue-picker-toggle.cloud-open,
+  .owner-selector input.cloud-open {
+    background-color: rgba(255,255,255,0.08) !important;
+  }
+}
+
+/* Light theme parity: ensure inputs have white background like .search */
+#owner-input,
+#issue-picker-toggle,
+.owner-selector input {
+  background-color: #fff !important;
+  color: #333;
+}
+
