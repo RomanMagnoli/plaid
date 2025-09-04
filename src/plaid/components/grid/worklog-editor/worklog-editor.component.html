@@ -8,6 +8,7 @@
 >
   <div
     class="panel-wrapper"
+    [class.dark-mode]="darkMode"
     [style.left.%]="panelOffsetLeft * 100"
     [style.top.px]="panelOffsetTop"
     [style.width.%]="panelWidth * 100"
@@ -24,6 +25,7 @@ Ctrl to snap to 60 minutes."
     <div
       #panel
       class="panel"
+      [class.dark-mode]="darkMode"
       [style.border-color]="'hsl(' + panelHue + ', ' + panelSaturation + '%, 50%)'"
       (mousedown)="dragStart($event)"
     >
@@ -116,7 +118,7 @@ Ctrl to snap to 60 minutes."
       ></textarea>
     </div>
 
-    <div class="buttons-area">
+    <div class="buttons-area" [class.dark-mode]="darkMode">
       <button
         id="save-button"
         class="button primary tangible"

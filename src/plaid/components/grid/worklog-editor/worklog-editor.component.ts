@@ -22,6 +22,7 @@ import {IssuePickerCloudComponent} from './issue-picker-cloud/issue-picker-cloud
 import {Subject} from 'rxjs';
 import {IssueApi} from '../../../core/issue/issue.api';
 import {WorklogApi} from '../../../core/worklog/worklog.api';
+import {SystemPreferencesService} from '../../../core/system-preferences.service';
 
 /**
  * Smart component, presenting edited worklog, handling all its interactions and updating worklog on the server
@@ -85,6 +86,11 @@ export class WorklogEditorComponent implements OnInit {
   /** Estado del user picker */
   userPickerOpen = false;
   userPickerOffsetTop = 0;
+
+  /**
+   * Dark mode state
+   */
+  darkMode = false;
 
   @ViewChild('panel')
   panel: ElementRef<HTMLDivElement>;
@@ -252,7 +258,8 @@ export class WorklogEditorComponent implements OnInit {
     private worklogFacade: WorklogFacade,
     private appStateService: AppStateService,
     private issueApi: IssueApi,
-    private worklogApi: WorklogApi
+    private worklogApi: WorklogApi,
+    private systemPreferencesService: SystemPreferencesService
   ) {
   }
 
@@ -262,6 +269,12 @@ export class WorklogEditorComponent implements OnInit {
   ngOnInit(): void {
     // Singleton component, no need to unsubscribe
     this.authFacade.getAuthenticatedUser$().subscribe(() => this.close());
+    
+    // Subscribe to dark mode changes
+    this.systemPreferencesService.getDarkMode$().subscribe(darkMode => {
+      this.darkMode = darkMode;
+      this.cdr.markForCheck();
+    });
   }
 
   /**

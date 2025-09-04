@@ -57,6 +57,10 @@
     right: 14px;
     pointer-events: none;
 
+    &.dark-mode {
+      background: linear-gradient(to top, #2d2d2d, transparent);
+    }
+
     .button {
       padding: 0 10px;
     }
@@ -92,6 +96,31 @@
   padding: 0 10px;
   overflow-y: hidden;
 
+  &.dark-mode {
+    background: #2d2d2d;
+    color: #ffffff;
+
+    input, textarea {
+      background: #3d3d3d;
+      color: #ffffff;
+      border-color: #555;
+
+      &:focus {
+        background: #4d4d4d;
+        border-color: #777;
+      }
+
+      &:disabled {
+        background: #1d1d1d;
+        color: #888;
+      }
+    }
+
+    label {
+      color: #cccccc;
+    }
+  }
+
   * {
     pointer-events: none;
   }
@@ -107,6 +136,10 @@
   &::-webkit-scrollbar-thumb {
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.2);
+  }
+
+  &.dark-mode::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
   }
 
   .space-under {
@@ -138,6 +171,48 @@
     display: block;
     margin-top: 1px;
     border-top: 1px solid var(--color-gray-2);
+  }
+}
+
+.panel-wrapper.dark-mode {
+  .handle-top, .handle-bottom {
+    background: #2d2d2d;
+    
+    &::before {
+      border-top: 1px solid #555;
+      border-bottom: 1px solid #555;
+    }
+
+    &::after {
+      border-top: 1px solid #555;
+    }
+  }
+
+  .buttons-area {
+    background: linear-gradient(to top, #2d2d2d, transparent);
+
+    .button {
+      background: #3d3d3d;
+      color: #ffffff;
+      border-color: #555;
+
+      &:hover:not(:disabled) {
+        background: #4d4d4d;
+      }
+
+      &.primary {
+        background: var(--color-primary-5);
+        color: #ffffff;
+
+        &:hover:not(:disabled) {
+          background: var(--color-primary-6);
+        }
+      }
+    }
+  }
+
+  &.buttons-outside-container .buttons-area {
+    background: none;
   }
 }
 
