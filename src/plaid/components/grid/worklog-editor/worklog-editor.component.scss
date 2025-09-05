@@ -83,18 +83,10 @@
 }
 
 .panel {
-  position: absolute;
-  top: 0;
-  right: 5px;
-  bottom: -1px;
-  left: 4px;
-  background: #fff;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-  cursor: move;
-  padding: 0 10px;
-  overflow-y: hidden;
+  position: absolute; top: 0; right: 5px; bottom: -1px; left: 4px;
+  background: #fff; border: 1px solid #cfcfcf; border-radius: 5px;
+  cursor: move; padding: 0 10px; overflow-y: hidden;
+  display: flex; flex-direction: column; height: 100%;
 
   &.dark-mode {
     background: #2d2d2d;
@@ -144,6 +136,13 @@
 
   .space-under {
     margin-bottom: 48px;
+  }
+
+  textarea.tangible.space-under {
+    min-height: 60px;
+    height: 0;
+    flex: 1 1 120px;
+    resize: none;
   }
 }
 
@@ -276,11 +275,7 @@ plaid-date-picker-cloud {
 }
 /* Estilo para el icono de advertencia de estimación faltante */
 .warning-icon {
-  margin-left: 4px;
-  color: #FFA000;
-  font-size: 1.2em;
-  vertical-align: middle;
-  pointer-events: none;
+  margin-left: 4px; color: #FFA000; font-size: 1.2em; vertical-align: middle; pointer-events: none;
 }
 
 /* Estilo para el selector de propietario */
