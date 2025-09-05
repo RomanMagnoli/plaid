@@ -11,7 +11,6 @@ import {DateRangePickerComponent} from './components/top-bar/date-range-picker/d
 import {GridBackgroundComponent} from './components/grid/grid-background/grid-background.component';
 import {RefreshButtonComponent} from './components/top-bar/refresh-buton/refresh-button.component';
 import {ExtHrefDirective} from './directives/ext-href.directive';
-import {NgxElectronModule} from 'ngx-electron';
 import {AuthStatusComponent} from './components/top-bar/auth-status/auth-status.component';
 import {ZoomControlsComponent} from './components/top-bar/zoom-controls/zoom-controls.component';
 import {CurrentTimeMarkerComponent} from './components/grid/current-time-marker/current-time-marker.component';
@@ -61,8 +60,7 @@ import {UserPickerCloudComponent} from './components/grid/worklog-editor/user-pi
   imports: [
     BrowserModule,
     HttpClientModule,
-    FormsModule,
-    NgxElectronModule
+    FormsModule
   ],
   providers: [
     {

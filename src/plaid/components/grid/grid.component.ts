@@ -33,7 +33,7 @@ export class GridComponent implements OnInit, AfterViewInit {
   timeSums: string[];
   _pixelsPerMinute: number;
   gridHeight = 0;
-  timeout: number;
+  timeout: ReturnType<typeof setTimeout> | null;
   editedWorklog: Worklog;
   _workingDaysStart: number;
   _workingDaysEnd: number;

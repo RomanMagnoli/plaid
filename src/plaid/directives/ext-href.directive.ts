@@ -1,5 +1,5 @@
 import {Directive, ElementRef, HostListener, Input} from '@angular/core';
-import {ElectronService} from 'ngx-electron';
+import {ElectronService} from '../core/electron/electron.service';
 
 @Directive({
   selector: '[plaidExtHref]'

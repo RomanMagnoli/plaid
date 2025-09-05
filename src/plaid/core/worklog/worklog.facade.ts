@@ -71,7 +71,7 @@ export class WorklogFacade {
    */
   private streamAllIssuesForWorklogDateRange$(dateRange: DateRange, user: User): Observable<Issue[]> {
     return this.worklogApi.getIssuesForWorklogDateRange$(dateRange, user).pipe(
-      expand<SearchResults>(
+      expand(
         (results: SearchResults) => (results.startAt + results.issues.length) < results.total
           ? this.worklogApi.getIssuesForWorklogDateRange$(dateRange, user, results.startAt + results.issues.length)
           : EMPTY
@@ -85,7 +85,7 @@ export class WorklogFacade {
    */
   private streamAllWorklogsForIssue$(issue: Issue): Observable<Worklog[]> {
     return this.worklogApi.getWorklogsForIssue$(issue.id).pipe(
-      expand<WorklogWithPagination>(
+      expand(
         (results: WorklogWithPagination) => (results.startAt + results.worklogs.length) < results.total
           ? this.worklogApi.getWorklogsForIssue$(issue.id, results.startAt + results.worklogs.length)
           : EMPTY
@@ -100,7 +100,7 @@ export class WorklogFacade {
    */
   private getWorklogsForDateRangeVerbose$(dateRange: DateRange, user: User): Observable<Worklog[]> {
     return this.streamAllIssuesForWorklogDateRange$(dateRange, user).pipe(
-      mergeAll<Issue>(),
+      mergeAll(),
       mergeMap<Issue, Observable<Worklog[]>>(issue => this.streamAllWorklogsForIssue$(issue)),
       map<Worklog[], Worklog[]>(worklogs => worklogs.filter(worklog => decodeURIComponent(worklog.author.self) === decodeURIComponent(user.self)
         && new Date(worklog.started).valueOf() >= dateRange.start.valueOf()

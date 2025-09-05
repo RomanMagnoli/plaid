@@ -90,5 +90,8 @@
         }
       }
     }},
-  "defaultProject": "plaid"
+  "defaultProject": "plaid",
+  "cli": {
+    "analytics": "53428bfe-7533-4594-9169-c9ade6f5557b"
+  }
 }
