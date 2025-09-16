@@ -187,4 +187,21 @@
       placeholder="e.g., PROJ-456 (leave empty to disable)"
     />
   </div>
+
+  <!-- Worklog Template Configuration Section -->
+  <div class="section-divider"></div>
+  <div class="section-title">📝 Worklog Template</div>
+  
+  <div class="field-set">
+    <label for="worklog-default-template">Default comment template</label>
+    <textarea
+      id="worklog-default-template"
+      class="input wide-input worklog-template-textarea"
+      rows="6"
+      [tabIndex]="dropdownOpen ? 0 : -1"
+      [ngModel]="worklogDefaultTemplate"
+      (ngModelChange)="setWorklogDefaultTemplate($event)"
+      placeholder="Enter default template for worklog comments (leave empty for no default text)"
+    ></textarea>
+  </div>
 </div>

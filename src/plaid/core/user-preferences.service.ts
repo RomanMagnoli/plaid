@@ -21,6 +21,7 @@ export class UserPreferencesService {
   private readonly QUICK_LOG_PROBLEMS_ENABLED = 'QUICK_LOG_PROBLEMS_ENABLED';
   private readonly QUICK_LOG_NEXT_DAY_TASK_CODE = 'QUICK_LOG_NEXT_DAY_TASK_CODE';
   private readonly QUICK_LOG_PROBLEMS_TASK_CODE = 'QUICK_LOG_PROBLEMS_TASK_CODE';
+  private readonly WORKLOG_DEFAULT_TEMPLATE = 'WORKLOG_DEFAULT_TEMPLATE';
 
   private workingHoursStartMinutes: BehaviorSubject<number> =
     new BehaviorSubject<number>(Number(localStorage.getItem(this.WORKING_HOURS_START_MINUTES) || 540));
@@ -59,6 +60,15 @@ export class UserPreferencesService {
     new BehaviorSubject<string>(localStorage.getItem(this.QUICK_LOG_NEXT_DAY_TASK_CODE) || '');
   private quickLogProblemsTaskCode: BehaviorSubject<string> = 
     new BehaviorSubject<string>(localStorage.getItem(this.QUICK_LOG_PROBLEMS_TASK_CODE) || '');
+  
+  // Worklog default template configuration
+  private worklogDefaultTemplate: BehaviorSubject<string> = 
+    new BehaviorSubject<string>((() => {
+      const saved = localStorage.getItem(this.WORKLOG_DEFAULT_TEMPLATE);
+      const defaultValue = '**Avances del dia de hoy**\n\n\n**En que punto estamos**\n\n';
+      console.log('Initializing worklog template. Saved value:', saved);
+      return saved || defaultValue;
+    })());
 
   setWorkingHoursStartMinutes(value: number): void {
     this.workingHoursStartMinutes.next(value);
@@ -286,5 +296,17 @@ export class UserPreferencesService {
 
   getQuickLogProblemsTaskCode$(): Observable<string> {
     return this.quickLogProblemsTaskCode.asObservable();
+  }
+
+  // Worklog default template configuration methods
+  setWorklogDefaultTemplate(value: string): void {
+    console.log('Setting worklog template to:', value);
+    this.worklogDefaultTemplate.next(value);
+    localStorage.setItem(this.WORKLOG_DEFAULT_TEMPLATE, value);
+    console.log('Saved to localStorage:', localStorage.getItem(this.WORKLOG_DEFAULT_TEMPLATE));
+  }
+
+  getWorklogDefaultTemplate$(): Observable<string> {
+    return this.worklogDefaultTemplate.asObservable();
   }
 }

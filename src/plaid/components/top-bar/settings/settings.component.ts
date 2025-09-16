@@ -53,6 +53,10 @@ export class SettingsComponent {
   @Input() quickLogProblemsTaskCode: string;
   @Output() quickLogProblemsTaskCodeChange = new EventEmitter<string>();
 
+  // Worklog default template configuration
+  @Input() worklogDefaultTemplate: string;
+  @Output() worklogDefaultTemplateChange = new EventEmitter<string>();
+
   constructor(private ref: ElementRef, private cdr: ChangeDetectorRef) {
   }
 
@@ -103,6 +107,13 @@ export class SettingsComponent {
       this.quickLogProblemsTaskCodeChange.emit(value);
     }
     this.quickLogProblemsTaskCode = value;
+  }
+
+  setWorklogDefaultTemplate(value: string) {
+    if (this.worklogDefaultTemplate !== value && this.worklogDefaultTemplate !== undefined) {
+      this.worklogDefaultTemplateChange.emit(value);
+    }
+    this.worklogDefaultTemplate = value;
   }
 
   setWorkingHoursStartMinutes(value: number) {

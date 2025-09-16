@@ -44,6 +44,9 @@ export class PlaidComponent implements OnInit {
   quickLogProblemsEnabled: boolean;
   quickLogNextDayTaskCode: string;
   quickLogProblemsTaskCode: string;
+  
+  // Worklog configuration
+  worklogDefaultTemplate: string;
 
   constructor(
     private systemPreferencesService: SystemPreferencesService, // Injected service early to run its constructor
@@ -79,6 +82,9 @@ export class PlaidComponent implements OnInit {
     this.userPreferencesService.getQuickLogProblemsEnabled$().subscribe(value => this.quickLogProblemsEnabled = value);
     this.userPreferencesService.getQuickLogNextDayTaskCode$().subscribe(value => this.quickLogNextDayTaskCode = value);
     this.userPreferencesService.getQuickLogProblemsTaskCode$().subscribe(value => this.quickLogProblemsTaskCode = value);
+    
+    // Worklog configuration subscriptions
+    this.userPreferencesService.getWorklogDefaultTemplate$().subscribe(value => this.worklogDefaultTemplate = value);
   }
 
   setVisibleDateRange(dateRange: DateRange): void {
@@ -154,5 +160,10 @@ export class PlaidComponent implements OnInit {
 
   setQuickLogProblemsTaskCode(value: string): void {
     this.userPreferencesService.setQuickLogProblemsTaskCode(value);
+  }
+
+  // Worklog configuration setters
+  setWorklogDefaultTemplate(value: string): void {
+    this.userPreferencesService.setWorklogDefaultTemplate(value);
   }
 }

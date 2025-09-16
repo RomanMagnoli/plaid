@@ -70,6 +70,13 @@
     font-size: 14px;
   }
 
+  .worklog-template-textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: monospace;
+    line-height: 1.4;
+  }
+
   .input-separator {
     width: 25px;
     text-align: center;
