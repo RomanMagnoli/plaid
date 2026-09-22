@@ -138,7 +138,14 @@ function registerElectronBridge() {
   ipcMain.handle('plaid:jira-request', async (event, request) => {
     requireTrustedSender(event);
     const {saved, target} = validateJiraUrl(request.url);
-    const headers = {Accept: 'application/json'};
+    // Jira Cloud runs its XSRF protection on any write request that looks like it comes from a browser, and rejects
+    // it with 403 "XSRF check failed" regardless of the Authorization header or X-Atlassian-Token. net.fetch uses
+    // Chromium's stack, so it would send a Chrome User-Agent; identifying as this app keeps writes working.
+    const headers = {
+      Accept: 'application/json',
+      'User-Agent': 'plaid/' + app.getVersion(),
+      'X-Atlassian-Token': 'no-check'
+    };
     let requestUrl = target.href;
     if (saved.method === 'oauth') {
       try {
@@ -168,6 +175,8 @@ function registerElectronBridge() {
       method: request.method,
       headers,
       body,
+      // Authenticate with the Authorization header only; session cookies would make Jira fall back to cookie auth.
+      credentials: 'omit',
       redirect: 'manual',
       signal: AbortSignal.timeout(30000)
     });
